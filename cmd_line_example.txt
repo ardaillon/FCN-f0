@@ -1,1 +1,0 @@
-python /path_to/FCN-f0/prediction.py -i /path_to/test.wav -o /path_to/test.f0.csv -m /path_to/FCN-f0/models/FCN_1953/model.json -w /Upath_to/FCN-f0/models/FCN_1953/weights.h5 -FC 1 -is 1953 -sr 8000 -sc -vit -v -p -f csv
