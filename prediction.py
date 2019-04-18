@@ -37,7 +37,7 @@ def to_local_average_cents(salience, center=None, fmin=30., fmax=1000., vecSize=
     raise Exception("label should be either 1d or 2d ndarray")
 
 
-def to_viterbi_cents(salience, vecSize=486, smoothing_factor=2):
+def to_viterbi_cents(salience, vecSize=486, smoothing_factor=12):
     """
     Find the Viterbi path using a transition prior that induces pitch
     continuity.
@@ -251,10 +251,10 @@ if __name__ == '__main__':
         model_input_size = int(model.layers[0].input.shape[1])  # get the input size required by the model
     else:
         if(model_input_size == 1953):
-            from dnn_mods.deepF0.models.FCN_1953.core import build_model
+            from models.FCN_1953.core import build_model
             model = build_model(weightsFile=weightsFile, inputSize=1953, training=False)
         elif(model_input_size == 929):
-            from dnn_mods.deepF0.models.FCN_929.core import build_model
+            from models.FCN_929.core import build_model
             model = build_model(weightsFile=weightsFile, inputSize=929, training=False)
         else:
             raise("You need to either provide a prebuilt model file in json format with -m ; or give the expected "
@@ -279,9 +279,9 @@ if __name__ == '__main__':
 
         # build and load model :
         if(model_input_size == 1953):
-            from dnn_mods.deepF0.models.FCN_1953.core import build_model
+            from models.FCN_1953.core import build_model
         elif(model_input_size == 929):
-            from dnn_mods.deepF0.models.FCN_929.core import build_model
+            from models.FCN_929.core import build_model
         model = build_model(weightsFile=weightsFile, inputSize=audioLen, training=False)
 
         # run prediction :
