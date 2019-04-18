@@ -201,7 +201,6 @@ if __name__ == '__main__':
                                                                             "(it is the size for the exemples in the training batch during training, and that will be used for the normalisation "
                                                                             "with a sliding window for prediction)")
     parser.add_argument("-sr", "--model_srate", type=int, default=8000, help="sampling rate expected by the model (on which it has been trained) for prediction.")
-    parser.add_argument("-gpu", "--use_gpu", action="store_true", help="run analysis on a gpu if available (otherwise run on cpu")
     parser.add_argument("-sc", "--use_single_core", action="store_true", help="run analysis on a single core CPU instead")
     parser.add_argument("-vit", "--viterbi", action="store_true", help="use viterbi for prediction")
     parser.add_argument("-v", "--verbose", action="store_true", help="verbose mode. Print some informations")
@@ -213,7 +212,6 @@ if __name__ == '__main__':
     ## get parameters :
     # global options :
     FULLCONV = bool(args.full_conv_mode) # about 3x faster using fully-convolutional prediction
-    GPU = args.use_gpu
     SINGLE_CORE_CPU = args.use_single_core # about 3 to 4 times slower using 1 single CPU for prediction instead of the default configuration
     viterbi = args.viterbi
     # I/O files :
@@ -226,14 +224,6 @@ if __name__ == '__main__':
     model_srate = args.model_srate
     model_input_size = args.input_size
     stride = 1
-
-
-    if(GPU): # lock a gpu if possible
-        try:
-            from dnn_mods.gputils import lock_gpu
-            gpu_id_locked = lock_gpu()
-        except:
-            print("function lock_gpu not found or not able to lock a gpu")
 
     if(SINGLE_CORE_CPU): # use a single core of CPU
         import tensorflow as tf
