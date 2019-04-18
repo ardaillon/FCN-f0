@@ -167,8 +167,8 @@ def sliding_norm(audio, frame_sizes = 1953):
 
 def get_audio(sndFile, model_input_size = 1953):
     # read sound :
-    from pysndfile import sndio
-    (audio, sr, enc) = sndio.read(sndFile)
+    from scipy.io import wavfile
+    (sr, audio) = wavfile.read(sndFile)
     if len(audio.shape) == 2:
         audio = audio.mean(1)  # make mono
     audio = audio.astype(np.float32)
