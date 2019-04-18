@@ -1,0 +1,1 @@
+python /Users/Luc/ircam/f0_analysis/FCN-f0/prediction.py -i /Users/Luc/ircam/f0_analysis/test.wav -o /Users/Luc/ircam/f0_analysis/test.f0.csv -m /Users/Luc/ircam/f0_analysis/FCN-f0/models/FCN_1953/model.json -w /Users/Luc/ircam/f0_analysis/FCN-f0/models/FCN_1953/weights.h5 -FC 1 -is 1953 -sr 8000 -sc -vit -v -p -f csv
