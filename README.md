@@ -12,8 +12,20 @@ The code currently provided only allows to run the pitch estimation on given sou
 
 The models, algorithm, training, and evaluation procedures have been described in a publication entitled "Fully-Convolutional Network for Pitch Estimation of Speech Signals", submitted to the Interspeech 2019 conference (currently under review).
 
-## Example command-line usage
-python /path_to/FCN-f0/prediction.py -i /path_to/test.wav -o /path_to/test.f0.csv -m /path_to/FCN-f0/models/FCN_1953/model.json -w /Upath_to/FCN-f0/models/FCN_1953/weights.h5 -FC 1 -is 1953 -sr 8000 -sc -vit -v -p -f csv
+## Example command-line usage (using provided pretrained models)
+#### model FCN-1953
+python /path_to/FCN-f0/prediction.py -i /path_to/test.wav -o /path_to/test-FCN_1953.f0.csv -m /path_to/FCN-f0/models/FCN_1953/model.json -w /path_to/FCN-f0/models/FCN_1953/weights.h5 --use_single_core --verbose --plot
+
+or
+
+python /path_to/FCN-f0/prediction.py -i /path_to/test.wav -o /path_to/test-FCN_1953-no_json.f0.csv -w /path_to/FCN-f0/models/FCN_1953/weights.h5 -is 1953 --use_single_core --verbose --plot
+
+#### model FCN-929
+python /path_to/FCN-f0/prediction.py -i /path_to/test.wav -o /path_to/test-FCN_929.f0.csv -m /path_to/FCN-f0/models/FCN_929/model.json -w /path_to/FCN-f0/models/FCN_929/weights.h5 --use_single_core --verbose --plot
+
+or
+
+python /path_to/FCN-f0/prediction.py -i /path_to/test.wav -o /path_to/test-FCN_929-no_json.f0.csv -w /path_to/FCN-f0/models/FCN_929/weights.h5 -is 929 --use_single_core --verbose --plot
 
 ## References
 [1] Jong Wook Kim, Justin Salamon, Peter Li, Juan Pablo Bello. "CREPE: A Convolutional Representation for Pitch Estimation", Proceedings of the IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP), 2018.
