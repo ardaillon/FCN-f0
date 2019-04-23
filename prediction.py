@@ -205,7 +205,7 @@ if __name__ == '__main__':
     parser.add_argument("-vit", "--viterbi", action="store_true", help="use viterbi for prediction")
     parser.add_argument("-v", "--verbose", action="store_true", help="verbose mode. Print some informations")
     parser.add_argument("-p", "--plot", action="store_true", help="Plot the predicted f0 curve at the end")
-    parser.add_argument('-f', "--out_format", default='sdif', help='format to use for storing f0 curve. Either sdif or csv')
+    parser.add_argument('-f', "--out_format", default='csv', help='format to use for storing f0 curve. Either sdif or csv')
 
     args = parser.parse_args()
 
