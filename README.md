@@ -1,5 +1,7 @@
 # FCN-f0
-Fully-Convolutional Network for Pitch Estimation of Speech Signals
+L. Ardaillon and A. Roebel, "Fully-Convolutional Network for Pitch Estimation of Speech Signals", Proc. Interspeech, 2019.
+
+We kindly request that academic publications making use of our FCN models cite the aforementioned paper.
 
 ## Description
 The code provided in this repository aims at performing monophonic pitch (f0) estimation.
