@@ -4,17 +4,16 @@ L. Ardaillon and A. Roebel, "Fully-Convolutional Network for Pitch Estimation of
 We kindly request that academic publications making use of our FCN models cite the aforementioned paper.
 
 ## Description
-The code provided in this repository aims at performing monophonic pitch (f0) estimation.
+The code provided in this repository aims at performing monophonic pitch (F0) estimation using Fully-Convolutional Neural Networks. 
 It is partly based on the code from the CREPE repository => https://github.com/marl/crepe
 
-Two different fully-convolutional pre-trained models are provided.
-Those models have been trained exclusively on speech data and may thus not perform as well on other types of sounds.
-
-The code currently provided only allows to run the pitch estimation on given sound files using the provided pretrained models (no code is currently provided to train the model on new data).
+The provided code allows to run the pitch estimation on given sound files using the provided pretrained models, but no code is currently provided to train the model on new data.
+Three different fully-convolutional pre-trained models are provided.
+Those models have been trained exclusively on (synthetic) speech data and may thus not perform as well on other types of sounds such as music instruments.
 
 The models, algorithm, training, and evaluation procedures have been described in a publication entitled "Fully-Convolutional Network for Pitch Estimation of Speech Signals", to be presented at the Interspeech 2019 conference.
 
-Below are the results of our evaluation comparing our models to the SWIPE algorithm and CREPE model:
+Below are the results of our evaluations comparing our models to the SWIPE algorithm and CREPE model, in terms of Raw pitch accuracy (average value and standard deviation, on both a test database of synthetic speech "PAN-synth" and a database of real speech samples with manually-corrected ground truth "manual"). For this evaluation, the CREPE model has been evaluated both with the provided pretrained model from the CREPE repository ("CREPE" in the table) and with a model retrained from scratch on our synthetic database.
 <table>
     <thead>
         <tr>
@@ -76,7 +75,9 @@ Below are the results of our evaluation comparing our models to the SWIPE algori
     </tbody>
 </table>
 
-And below are comparaison of latency and computation times for the different models and SWIPE :
+The synthetic speech data has been created using the PAN synthesis engine, described in [2, Section 3.5.2].
+
+We also compared the different models and algorithms in terms of potential latency (with real-time implementation in mind), where the latency corresponds to the duration of half the (minimal) input size, and computation times on both a GPU and single-core CPU :
 <table>
     <thead>
         <tr>
@@ -133,3 +134,4 @@ python /path_to/FCN-f0/prediction.py -i /path_to/test.wav -o /path_to/test-FCN_9
 
 ## References
 [1] Jong Wook Kim, Justin Salamon, Peter Li, Juan Pablo Bello. "CREPE: A Convolutional Representation for Pitch Estimation", Proceedings of the IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP), 2018.
+[2] L. Ardaillon, “Synthesis and expressive transformation of singing voice,” Ph.D. dissertation, EDITE; UPMC-Paris 6 Sorbonne Universités, 2017.
