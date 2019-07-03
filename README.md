@@ -15,7 +15,7 @@ Those models have been trained exclusively on (synthetic) speech data and may th
 
 The models, algorithm, training, and evaluation procedures have been described in a publication entitled "Fully-Convolutional Network for Pitch Estimation of Speech Signals", to be presented at the Interspeech 2019 conference.
 
-Below are the results of our evaluations comparing our models to the SWIPE algorithm and CREPE model, in terms of Raw pitch accuracy (average value and standard deviation, on both a test database of synthetic speech "PAN-synth" and a database of real speech samples with manually-corrected ground truth "manual"). For this evaluation, the CREPE model has been evaluated both with the provided pretrained model from the CREPE repository ("CREPE" in the table) and with a model retrained from scratch on our synthetic database.
+Below are the results of our evaluations comparing our models to the SWIPE algorithm and CREPE model, in terms of Raw pitch accuracy (average value and standard deviation, on both a test database of synthetic speech "PAN-synth" and a database of real speech samples with manually-corrected ground truth "manual"). For this evaluation, the CREPE model has been evaluated both with the provided pretrained model from the CREPE repository ("CREPE" in the table) and with a model retrained from scratch on our synthetic database. FCN models have been evluated on 8kHz audio, while CREPE and SWIPE have been trained and evaluated on 16kHz audio.
 <table>
     <thead>
         <tr>
