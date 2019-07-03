@@ -76,7 +76,7 @@ Below are the results of our evaluation comparing our models to the SWIPE algori
     </tbody>
 </table>
 
-And below are comparaison of results and computation times for the different models and SWIPE :
+And below are comparaison of latency and computation times for the different models and SWIPE :
 <table>
     <thead>
         <tr>
