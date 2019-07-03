@@ -110,11 +110,11 @@ We also compared the different models and algorithms in terms of potential laten
         </tr>        
         <tr>
             <td><sub>CPU</sub></td>
-            <td><sub><strong>1.65s</strong></sub></td>
+            <td><sub>1.65s</sub></td>
             <td><sub>0.89s</sub></td>
             <td><sub>3.34s</sub></td>
             <td><sub>14.79s</sub></td>
-            <td><sub>0.63s</sub></td>
+            <td><sub><strong>0.63s</strong></sub></td>
         </tr>
     </tbody>
 </table>
