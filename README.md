@@ -93,28 +93,28 @@ We also compared the different models and algorithms in terms of potential laten
     </thead>
     <tbody>
         <tr>
-            <td><sub>latency</sub></td>
-            <td><sub>0.122s</sub></td>
-            <td><sub>0.062s</strong></sub></td>
-            <td><sub>0.058s</sub></td>
-            <td><sub><strong>0.032s</strong></sub></td>
+            <td><sub>latency (s)</sub></td>
+            <td><sub>0.122</sub></td>
+            <td><sub>0.062</strong></sub></td>
+            <td><sub>0.058</sub></td>
+            <td><sub><strong>0.032</strong></sub></td>
             <td><sub>0.128</sub></td>
         </tr>        
         <tr>
-            <td><sub>GPU</sub></td>
-            <td><sub>0.016s</sub></td>
-            <td><sub><strong>0.010s</sub></td>
-            <td><sub>0.021s</sub></td>
-            <td><sub>0.092s</sub></td>
+            <td><sub>Computation time on GPU (s)</sub></td>
+            <td><sub>0.016</sub></td>
+            <td><sub><strong>0.010</sub></td>
+            <td><sub>0.021</sub></td>
+            <td><sub>0.092</sub></td>
             <td><sub>X</sub></td>
         </tr>        
         <tr>
-            <td><sub>CPU</sub></td>
-            <td><sub>1.65s</sub></td>
-            <td><sub>0.89s</sub></td>
-            <td><sub>3.34s</sub></td>
-            <td><sub>14.79s</sub></td>
-            <td><sub><strong>0.63s</strong></sub></td>
+            <td><sub>Computation time on CPU (s)</sub></td>
+            <td><sub>1.65</sub></td>
+            <td><sub>0.89</sub></td>
+            <td><sub>3.34</sub></td>
+            <td><sub>14.79</sub></td>
+            <td><sub><strong>0.63</strong></sub></td>
         </tr>
     </tbody>
 </table>
