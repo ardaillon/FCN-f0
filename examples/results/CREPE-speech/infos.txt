@@ -1,0 +1,1 @@
+Results of F0 analysis using the CREPE algorithm with a retrained model, trained on our own synthetic speech database ("PAN-synth"), for both the manual and PAN-synth databases.

@@ -1,0 +1,1 @@
+Files from the TIMIT database resynthesized 3 different pitches (original pitch, 1 octave down, and 1 octave up) using the PAN synthesis engine.

@@ -1,0 +1,2 @@
+Original 16kHz audio recordings from the TIMIT database.
+Those extracts have been chosen from the test set of our database.

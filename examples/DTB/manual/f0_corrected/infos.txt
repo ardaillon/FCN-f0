@@ -1,0 +1,2 @@
+Reference ground truth F0 files for the "manual" database.
+Those F0 curves have been obtained by first analyzing the original 16kHz audio files using the CREPE algorithm with the provided default model (the "full capacity" one), and further manually correcting the obtained curves by hand-drawing it on the spectrogram using the audiosculpt software.

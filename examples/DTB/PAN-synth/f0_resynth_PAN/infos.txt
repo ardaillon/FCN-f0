@@ -1,0 +1,3 @@
+Reference ground truth F0 files used for the resynthesis of the database with the PAN engine.
+The F0 curves have been obtained by analyzing the original 16kHz audio files using the CREPE algorithm with the provided default model (the "full capacity" version).
+Then, those curves have also been transposed 1 octave down and 1 octave up.

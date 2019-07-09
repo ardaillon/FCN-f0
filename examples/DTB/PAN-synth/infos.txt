@@ -1,0 +1,1 @@
+Examples files from the test split of the PAN-synth database (synthetic speech generated using the PAN engine and ground truth f0 files used for the synthesis).

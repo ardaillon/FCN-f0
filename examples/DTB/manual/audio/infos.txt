@@ -1,0 +1,1 @@
+Original audio recordings from the TIMIT database contained into our "manual" database (and corresponding to files contained in the test split of our synthetic database).

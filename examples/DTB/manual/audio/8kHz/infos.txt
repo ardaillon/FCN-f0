@@ -1,0 +1,2 @@
+Original audio recordings from the TIMIT database resampled at 8kHz.
+Those extracts have been chosen from the test set of our database.

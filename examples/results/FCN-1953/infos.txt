@@ -1,0 +1,1 @@
+Results of F0 analysis using the FCN-1953 model, for both the manual and PAN-synth databases.
