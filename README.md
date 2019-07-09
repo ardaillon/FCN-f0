@@ -127,6 +127,13 @@ or
 
 python /path_to/FCN-f0/prediction.py -i /path_to/test.wav -o /path_to/test-FCN_1953-no_json.f0.csv -w /path_to/FCN-f0/models/FCN_1953/weights.h5 -is 1953 --use_single_core --verbose --plot
 
+#### model FCN-993
+python /path_to/FCN-f0/prediction.py -i /path_to/test.wav -o /path_to/test-FCN_993.f0.csv -m /path_to/FCN-f0/models/FCN_993/model.json -w /path_to/FCN-f0/models/FCN_993/weights.h5 --use_single_core --verbose --plot
+
+or
+
+python /path_to/FCN-f0/prediction.py -i /path_to/test.wav -o /path_to/test-FCN_993-no_json.f0.csv -w /path_to/FCN-f0/models/FCN_993/weights.h5 -is 993 --use_single_core --verbose --plot
+
 #### model FCN-929
 python /path_to/FCN-f0/prediction.py -i /path_to/test.wav -o /path_to/test-FCN_929.f0.csv -m /path_to/FCN-f0/models/FCN_929/model.json -w /path_to/FCN-f0/models/FCN_929/weights.h5 --use_single_core --verbose --plot
 
