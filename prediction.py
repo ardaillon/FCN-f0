@@ -270,6 +270,8 @@ if __name__ == '__main__':
         # build and load model :
         if(model_input_size == 1953):
             from models.FCN_1953.core import build_model
+        elif(model_input_size == 993):
+            from models.FCN_993.core import build_model
         elif(model_input_size == 929):
             from models.FCN_929.core import build_model
         model = build_model(weightsFile=weightsFile, inputSize=audioLen, training=False)
