@@ -243,12 +243,16 @@ if __name__ == '__main__':
         if(model_input_size == 1953):
             from models.FCN_1953.core import build_model
             model = build_model(weightsFile=weightsFile, inputSize=1953, training=False)
+        elif(model_input_size == 993):
+            from models.FCN_993.core import build_model
+            model = build_model(weightsFile=weightsFile, inputSize=993, training=False)
         elif(model_input_size == 929):
             from models.FCN_929.core import build_model
             model = build_model(weightsFile=weightsFile, inputSize=929, training=False)
         else:
-            raise("You need to either provide a prebuilt model file in json format with -m ; or give the expected "
-                  "minimum input size of the model (either 1953 or 929 for the provided models).")
+            import pdb
+            pdb.set_trace()
+            raise("You need to either provide a prebuilt model file in json format with -m ; or give the expected minimum input size of the model (either 1953, 993, or 929 for the provided models).")
 
     # read the audio
     audio = get_audio(sndFile, model_input_size)
