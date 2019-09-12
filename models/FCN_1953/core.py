@@ -10,7 +10,7 @@ modified by Luc Ardaillon: 16/04/2019
 # the model is trained on 8kHz audio
 model_srate = 8000
 
-def build_model(learning_rate=0.0002, weightsFile=None, inputSize=1953, dropout = 0, training = True):
+def build_model(learning_rate=0.0002, weightsFile=None, inputSize=1953, dropout = 0, training = False):
     '''
     :param learning_rate:
     :param weightsFile:
@@ -30,8 +30,12 @@ def build_model(learning_rate=0.0002, weightsFile=None, inputSize=1953, dropout 
     widths = [32, 64, 64, 64, 64, 64]
     strides = [(1, 1), (1, 1), (1, 1), (1, 1), (1, 1), (1, 1)]
 
-    x = Input(shape=(inputSize,), name='input', dtype='float32')
-    y = Reshape(target_shape=(inputSize, 1, 1), name='input-reshape')(x)
+    if(inputSize is not None):
+        x = Input(shape=(inputSize,), name='input', dtype='float32')
+        y = Reshape(target_shape=(inputSize, 1, 1), name='input-reshape')(x)
+    else:
+        x = Input(shape=(None,1,1), name='input', dtype='float32')
+        y = x
 
     for l, f, w, s in zip(layers, filters, widths, strides):
         y = Conv2D(f, (w, 1), strides=s, padding='valid', activation='relu', name="conv%d" % l)(y)

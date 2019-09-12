@@ -1,15 +1,20 @@
 
+import sys
+import os
 import numpy as np
 from models.f0_to_target_convertor import freq2cents, cents2freq
 import time as timeModule
+from models.load_model import load_model, get_infos_from_tag
+import re
+
 
 def to_local_average_cents(salience, center=None, fmin=30., fmax=1000., vecSize=486):
     '''
     find the weighted average cents near the argmax bin in output pitch class vector
 
     :param salience: output vector of salience for each pitch class
-    :param fmin: minimum ouput frequency (correponding to the 1st pitch class in output vector)
-    :param fmax: maximum ouput frequency (correponding to the last pitch class in output vector)
+    :param fmin: minimum ouput frequency (corresponding to the 1st pitch class in output vector)
+    :param fmax: maximum ouput frequency (corresponding to the last pitch class in output vector)
     :param vecSize: number of pitch classes in output vector
     :return: predicted pitch in cents
     '''
@@ -70,6 +75,7 @@ def to_viterbi_cents(salience, vecSize=486, smoothing_factor=12):
     return np.array([to_local_average_cents(salience[i, :], path[i]) for i in
                      range(len(observations))])
 
+
 def get_global_pooling_factor(model):
     globalPoolingFactor = 1
     layers = model.layers
@@ -79,7 +85,8 @@ def get_global_pooling_factor(model):
             globalPoolingFactor *= conf['pool_size'][0]
     return globalPoolingFactor
 
-def predict_fullConv(model, audio, model_input_size = 1953, viterbi=False, model_srate = 8000):
+
+def predict_fullConv(model, audio, viterbi=False, model_srate = 8000):
     activations = model.predict(audio, verbose=1)
     confidence = activations.max(axis=3)[0,:,0]
     activations = np.reshape(activations, (np.shape(activations)[1], np.shape(activations)[3]))
@@ -95,10 +102,12 @@ def predict_fullConv(model, audio, model_input_size = 1953, viterbi=False, model
     frequencies[np.isnan(frequencies)] = 0
 
     globalPoolingFactor = get_global_pooling_factor(model) # total max pooling on whole network to get the temporal subsampling factor between the input and output of the network. = 8 for FCN-1953 and = 4 for FCN-929
+    stride = 1
     timeVec = (np.arange(len(frequencies)) * stride * globalPoolingFactor) / model_srate
     return (timeVec, frequencies, confidence, activations)
 
-def get_activation(audio, model, step_size=10, inputSize = 1953):
+
+def get_activation(audio, model, step_size=10, inputSize = 993, model_srate = 8000.):
     from numpy.lib.stride_tricks import as_strided
 
     # make inputSize-sample frames of the audio with hop length of 10 milliseconds
@@ -114,8 +123,9 @@ def get_activation(audio, model, step_size=10, inputSize = 1953):
     # run prediction and convert the frequency bin weights to Hz
     return model.predict(frames, verbose=1)
 
-def predict_frameWise(audio, model, model_input_size = 1953, viterbi=False, step_size=10):
-    activation = get_activation(audio, model, step_size=step_size, inputSize = model_input_size)
+
+def predict_frameWise(audio, model, model_input_size = 993, viterbi=False, step_size=10, model_srate = 8000.):
+    activation = get_activation(audio, model, step_size=step_size, inputSize = model_input_size, model_srate = model_srate)
     confidence = activation.max(axis=1)
 
     if viterbi:
@@ -130,7 +140,8 @@ def predict_frameWise(audio, model, model_input_size = 1953, viterbi=False, step
 
     return time, frequency, confidence, activation
 
-def sliding_norm(audio, frame_sizes = 1953):
+
+def sliding_norm(audio, frame_sizes = 993):
     '''
     Normalize each sample by mean and variance on a sliding window
 
@@ -155,17 +166,16 @@ def sliding_norm(audio, frame_sizes = 1953):
     std = np.std(frames, axis=1)[:, np.newaxis]
 
     audio = audio[frame_sizes//2:-frame_sizes//2]
-    print("np.shape(audio) = "+str(np.shape(audio)))
     mean = mean.flatten()
-    print("np.shape(mean) = "+str(np.shape(mean)))
     std = std.flatten()
-    print("np.shape(std) = "+str(np.shape(std)))
     audio -= mean
     audio /= std
 
     return np.array(audio)
 
-def get_audio(sndFile, model_input_size = 1953):
+
+def get_audio(sndFile, model_input_size = 993, modelTag = '993', model_srate = 8000.):
+
     # read sound :
     from scipy.io import wavfile
     (sr, audio) = wavfile.read(sndFile)
@@ -185,6 +195,164 @@ def get_audio(sndFile, model_input_size = 1953):
 
     return audio
 
+
+def run_prediction(filename, output = None, modelTag = 993, viterbi = False, outFormat = 'csv', FULLCONV = True,
+                   verbose = True, plot = False):
+    """
+    Collect the sound files to process and run the prediction on each file
+    Parameters
+    ----------
+    filename : list
+        List containing paths to sound files (wav or aiff) or folders containing sound files to
+        be analyzed.
+    output : str or None
+        Path to directory for saving output files. If None, output files will
+        be saved to the directory containing the input file.
+    model : model to be used for prediction with pre-loaded weights
+    viterbi : bool
+        Apply viterbi smoothing to the estimated pitch curve. False by default.
+    save_activation : bool
+        Save the output activation matrix to an .npy file. False by default.
+    save_plot: bool
+        Save a plot of the output activation matrix to a .png file. False by
+        default.
+    plot_voicing : bool
+        Include a visual representation of the voicing activity detection in
+        the plot of the output activation matrix. False by default, only
+        relevant if save_plot is True.
+    verbose : bool
+        Print status messages and keras progress (default=True).
+    """
+
+    # load model:
+    load_from_json = False
+
+    if(modelTag == 'CREPE'):
+        load_from_json = True
+
+    if(load_from_json):
+        model = load_model(modelTag, from_json=True)
+    else:
+        model = load_model(modelTag)
+
+    files = []
+    for path in filename:
+        if os.path.isdir(path):
+            found = ([file for file in os.listdir(path) if
+                      (file.lower().endswith('.wav') or file.lower().endswith('.aiff'))])
+            if len(found) == 0:
+                print('FCN-f0: No sound files (only wav or aiff supported) found in directory {}'.format(path),
+                      file=sys.stderr)
+            files += [os.path.join(path, file) for file in found]
+        elif os.path.isfile(path):
+            if not (path.lower().endswith('.wav') or path.lower().endswith('.aiff')):
+                print('FCN-f0: Expecting sound file(s) (only wav or aiff supported) but got {}'.format(path),
+                      file=sys.stderr)
+            else:
+                files.append(path)
+        else:
+            print('FCN-f0: File or directory not found: {}'.format(path),
+                  file=sys.stderr)
+
+    if len(files) == 0:
+        print('FCN-f0: No sound files found in {} (only wav or aiff supported), aborting.'.format(filename))
+        sys.exit(-1)
+
+    for i, file in enumerate(files):
+        if verbose:
+            print('FCN-f0: Processing {} ... ({}/{})'.format(
+                file, i+1, len(files)), file=sys.stderr)
+        run_prediction_on_file(file, output=output, model=model, modelTag=modelTag, viterbi=viterbi,
+                               outFormat=outFormat, FULLCONV=FULLCONV, plot=plot, verbose=verbose)
+    return
+
+
+def get_output_path(file, suffix, output_dir):
+    """
+    return the output path of an output file corresponding to a wav file
+    """
+    (filePath, ext) = os.path.splitext(file)
+    path = re.sub(r"(?i)"+ext+"$", suffix, file)
+    if output_dir is not None:
+        path = os.path.join(output_dir, os.path.basename(path))
+        if(not os.path.isdir(output_dir)):
+            os.makedirs(output_dir)
+    return path
+
+
+def run_prediction_on_file(inFile, output=None, model=None, modelTag=993, viterbi=False, outFormat='csv',
+                           FULLCONV=True, store_confidence = True, plot=False, verbose=True):
+
+    if(model==None):
+        raise('FCN-f0: model is None')
+
+    (model_input_size, model_srate) = get_infos_from_tag(modelTag)
+
+    # read and pad the audio from file :
+    audio = get_audio(inFile, model_input_size, modelTag, model_srate)
+
+    # run prediction :
+    if(not FULLCONV):
+        # If not FULLCONV, predict f0 on a frame basis, as is done in CREPE
+        # (may be used for comparison purpose, but FULLCONV mode is much faster with similar result)
+        startPredictTime = timeModule.time()
+        # run prediction :
+        (timeVec, frequencies, confidence, activations) = predict_frameWise(audio, model, model_input_size, viterbi,
+                                                                            step_size=10, model_srate = model_srate)
+        stopPredictTime = timeModule.time()
+        predictDuration = stopPredictTime - startPredictTime
+
+    else:
+        # normalize audio :
+        # Since input size is not fixed, use a sliding window for normalizing each sample
+        audio = sliding_norm(audio, frame_sizes=model_input_size)
+        audio = np.reshape(audio, (len(audio), 1, 1))
+        audio = np.array([audio])
+
+        # run prediction :
+        startPredictTime = timeModule.time()
+        (timeVec, frequencies, confidence, activations) = predict_fullConv(model, audio, viterbi, model_srate)
+        stopPredictTime = timeModule.time()
+        predictDuration = stopPredictTime - startPredictTime
+
+    if(verbose):
+        print("Model architecture : ")
+        print("")
+        model.summary()
+
+    if(verbose):
+        # computation time :
+        print("prediction time for file = "+str(predictDuration)+"s")
+
+    f0File = get_output_path(inFile, ".f0."+outFormat, output)
+
+    # store and plot f0 curve :
+    if(outFormat == 'sdif'):
+        try:
+            from fileio.sdif import Fstoref0
+            Fstoref0(f0File, timeVec, frequencies)  # TODO : add confidence values in output f0 file in sdif format
+        except:
+            print("unable to save f0 curve as an sdif file")
+    elif(outFormat == 'csv'):
+        if(store_confidence):
+            f0_data = np.vstack([timeVec, frequencies, confidence]).transpose()
+            np.savetxt(f0File, f0_data, fmt=['%.3f', '%.3f', '%.3f'], delimiter='   ', comments='')
+            # format is "time   frequency   confidence" in 3 columns
+        else:
+            f0_data = np.vstack([timeVec, frequencies]).transpose()
+            np.savetxt(f0File, f0_data, fmt=['%.3f', '%.3f'], delimiter='   ', comments='')
+            # format is "time   frequency" in 2 columns
+    print("Saved the estimated frequencies values at {}".format(f0File))
+
+    if(plot):
+        from matplotlib import pyplot as plt
+        plt.figure()
+        plt.plot(timeVec, frequencies)
+        plt.show()
+
+    return
+
+
 if __name__ == '__main__':
 
     # get command-line input arguments :
@@ -197,7 +365,7 @@ if __name__ == '__main__':
     parser.add_argument('-m', "--model_file", default=None, help='model file store in json format')
     parser.add_argument('-w', "--weights_file", default=None, help='file containing the weights of the model')
     parser.add_argument("-FC", "--full_conv_mode", type=int, default=1, help="run analysis in fully-convolutional mode (otherwise run it frame-wise but slower. Might be used for comparison purpose.)")
-    parser.add_argument("-is", "--input_size", type=int, default=1953, help="input size of the network for outputing one value"
+    parser.add_argument("-is", "--input_size", type=int, default=993, help="input size of the network for outputing one value"
                                                                             "(it is the size for the exemples in the training batch during training, and that will be used for the normalisation "
                                                                             "with a sliding window for prediction)")
     parser.add_argument("-sr", "--model_srate", type=int, default=8000, help="sampling rate expected by the model (on which it has been trained) for prediction.")
@@ -250,8 +418,6 @@ if __name__ == '__main__':
             from models.FCN_929.core import build_model
             model = build_model(weightsFile=weightsFile, inputSize=929, training=False)
         else:
-            import pdb
-            pdb.set_trace()
             raise("You need to either provide a prebuilt model file in json format with -m ; or give the expected minimum input size of the model (either 1953, 993, or 929 for the provided models).")
 
     # read the audio
@@ -282,7 +448,7 @@ if __name__ == '__main__':
 
         # run prediction :
         startPredictTime = timeModule.time()
-        (timeVec, frequencies, confidence, activations) = predict_fullConv(model, audio, model_input_size, viterbi, model_srate)
+        (timeVec, frequencies, confidence, activations) = predict_fullConv(model, audio, viterbi, model_srate)
         stopPredictTime = timeModule.time()
         predictDuration = stopPredictTime - startPredictTime
 
