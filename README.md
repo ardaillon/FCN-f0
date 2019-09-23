@@ -3,7 +3,7 @@ Code for running monophonic pitch (F0) estimation using the fully-convolutional 
 
 L. Ardaillon and A. Roebel, "Fully-Convolutional Network for Pitch Estimation of Speech Signals", Proc. Interspeech, 2019.
 
-We kindly request academic publications making use of our FCN models to cite this paper.
+We kindly request academic publications making use of our FCN models to cite this paper, which can be dowloaded from the following url : https://www.isca-speech.org/archive/Interspeech_2019/pdfs/2815.pdf
 
 ## Description
 The code provided in this repository aims at performing monophonic pitch (F0) estimation using Fully-Convolutional Neural Networks. 
@@ -11,11 +11,11 @@ It is partly based on the code from the CREPE repository => https://github.com/m
 
 The provided code allows to run the pitch estimation on given sound files using the provided pretrained models, but no code is currently provided to train the model on new data.
 Three different fully-convolutional pre-trained models are provided.
-Those models have been trained exclusively on (synthetic) speech data and may thus not perform as well on other types of sounds such as music instruments.
+Those models have been trained exclusively on (synthetic) speech data and may thus not perform as well on other types of sounds such as music instruments. Note that the output F0 values are also limited to the target range [30-1000]Hz, which is suitable for vocal signals (including high-pitched soprano singing). 
 
-The models, algorithm, training, and evaluation procedures have been described in a publication entitled "Fully-Convolutional Network for Pitch Estimation of Speech Signals", to be presented at the Interspeech 2019 conference.
+The models, algorithm, training, and evaluation procedures have been described in a publication entitled "Fully-Convolutional Network for Pitch Estimation of Speech Signals", presented at the Interspeech 2019 conference (https://www.isca-speech.org/archive/Interspeech_2019/pdfs/2815.pdf).
 
-Below are the results of our evaluations comparing our models to the SWIPE algorithm and CREPE model, in terms of Raw pitch accuracy (average value and standard deviation, on both a test database of synthetic speech "PAN-synth" and a database of real speech samples with manually-corrected ground truth "manual"). For this evaluation, the CREPE model has been evaluated both with the provided pretrained model from the CREPE repository ("CREPE" in the table) and with a model retrained from scratch on our synthetic database. FCN models have been evluated on 8kHz audio, while CREPE and SWIPE have been trained and evaluated on 16kHz audio.
+Below are the results of our evaluations comparing our models to the SWIPE algorithm and CREPE model, in terms of Raw Pitch Accuracy (average value and standard deviation, on both a test database of synthetic speech "PAN-synth" and a database of real speech samples with manually-corrected ground truth "manual"). For this evaluation, the CREPE model has been evaluated both with the provided pretrained model from the CREPE repository ("CREPE" in the table) and with a model retrained from scratch on our synthetic database ("CREPE-speech"). FCN models have been evluated on 8kHz audio, while CREPE and SWIPE have been trained and evaluated on 16kHz audio.
 <table>
     <thead>
         <tr>
@@ -120,26 +120,37 @@ We also compared the different models and algorithms in terms of potential laten
 </table>
 
 ## Example command-line usage (using provided pretrained models)
-#### model FCN-1953
-python /path_to/FCN-f0/prediction.py -i /path_to/test.wav -o /path_to/test-FCN_1953.f0.csv -m /path_to/FCN-f0/models/FCN_1953/model.json -w /path_to/FCN-f0/models/FCN_1953/weights.h5 --use_single_core --verbose --plot
+# Default analysis : This will run the FCN-993 model and output the result as a csv file in the same folder than the input file (replacing the file extension by ".csv")
+python /path_to/FCN-f0/FCN-f0.py /path_to/test.wav
 
-or
+# Run the analysis on a whole folder of audio files :
+python /path_to/FCN-f0/FCN-f0.py /path_to/audio_files
 
-python /path_to/FCN-f0/prediction.py -i /path_to/test.wav -o /path_to/test-FCN_1953-no_json.f0.csv -w /path_to/FCN-f0/models/FCN_1953/weights.h5 -is 1953 --use_single_core --verbose --plot
+# Specify an output directory or file name with "-o" option(if directory doesn't exist, it will be created):
+python /path_to/FCN-f0/FCN-f0.py /path_to/test.wav -o /path_to/output.f0.csv
+python /path_to/FCN-f0/FCN-f0.py /path_to/audio_files -o /path_to/output_dir
 
-#### model FCN-993
-python /path_to/FCN-f0/prediction.py -i /path_to/test.wav -o /path_to/test-FCN_993.f0.csv -m /path_to/FCN-f0/models/FCN_993/model.json -w /path_to/FCN-f0/models/FCN_993/weights.h5 --use_single_core --verbose --plot
+# Choose a specific model for running the analysis (default is FCN-993):
+Use FCN-929 model :
+python /path_to/FCN-f0/FCN-f0.py /path_to/test.wav -m 929 -o /path_to/output.f0-929.csv
 
-or
+Use FCN-993 model :
+python /path_to/FCN-f0/FCN-f0.py /path_to/test.wav -m 993 -o /path_to/output.f0-993.csv
 
-python /path_to/FCN-f0/prediction.py -i /path_to/test.wav -o /path_to/test-FCN_993-no_json.f0.csv -w /path_to/FCN-f0/models/FCN_993/weights.h5 -is 993 --use_single_core --verbose --plot
+Use FCN-1953 model :
+python /path_to/FCN-f0/FCN-f0.py /path_to/test.wav -m 1953 -o /path_to/output.f0-1953.csv
 
-#### model FCN-929
-python /path_to/FCN-f0/prediction.py -i /path_to/test.wav -o /path_to/test-FCN_929.f0.csv -m /path_to/FCN-f0/models/FCN_929/model.json -w /path_to/FCN-f0/models/FCN_929/weights.h5 --use_single_core --verbose --plot
+Use CREPE-speech model :
+python /path_to/FCN-f0/FCN-f0.py /path_to/test.wav -m CREPE -o /path_to/output.f0-CREPE.csv
 
-or
+# Apply viterbi smoothing of output :
+python /path_to/FCN-f0/FCN-f0.py /path_to/test.wav -vit
 
-python /path_to/FCN-f0/prediction.py -i /path_to/test.wav -o /path_to/test-FCN_929-no_json.f0.csv -w /path_to/FCN-f0/models/FCN_929/weights.h5 -is 929 --use_single_core --verbose --plot
+# Output result to sdif format (requires installing the eaSDIF python library. Default format is csv):
+python /path_to/FCN-f0/FCN-f0.py /path_to/test.wav -f sdif
+
+# Deactivate fully-convolutional mode (For comparison purpose, but not recommanded otherwise, as it makes the computation much slower):
+python /path_to/FCN-f0/FCN-f0.py /path_to/test.wav -FC 0
 
 ## References
 [1] Jong Wook Kim, Justin Salamon, Peter Li, Juan Pablo Bello. "CREPE: A Convolutional Representation for Pitch Estimation", Proceedings of the IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP), 2018.
