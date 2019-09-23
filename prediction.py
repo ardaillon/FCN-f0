@@ -154,9 +154,11 @@ def get_activation(audio, model, step_size=10, inputSize = 993, model_srate = 80
     return model.predict(frames, verbose=1)
 
 
-def predict_frameWise(audio, model, model_input_size = 993, viterbi=False, step_size=10, model_srate = 8000.):
+def predict_frameWise(audio, model, model_input_size = 993, viterbi=False, step_size=10, model_srate = 8000., modelTag=993):
     activation = get_activation(audio, model, step_size=step_size, inputSize = model_input_size, model_srate = model_srate)
     confidence = activation.max(axis=1)
+    activation = np.reshape(activation, (np.shape(activation)[0], np.shape(activation)[3]))
+    confidence = np.reshape(confidence, (np.shape(confidence)[0], np.shape(confidence)[2]))
 
     if viterbi:
         cents = to_viterbi_cents(activation)
@@ -266,7 +268,7 @@ def run_prediction(filename, output = None, modelTag = 993, viterbi = False, out
     if(load_from_json):
         model = load_model(modelTag, from_json=True)
     else:
-        model = load_model(modelTag)
+        model = load_model(modelTag, FULLCONV = FULLCONV)
 
     files = []
     for path in filename:
