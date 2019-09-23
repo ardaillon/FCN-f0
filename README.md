@@ -120,17 +120,17 @@ We also compared the different models and algorithms in terms of potential laten
 </table>
 
 ## Example command-line usage (using provided pretrained models)
-# Default analysis : This will run the FCN-993 model and output the result as a csv file in the same folder than the input file (replacing the file extension by ".csv")
+#### Default analysis : This will run the FCN-993 model and output the result as a csv file in the same folder than the input file (replacing the file extension by ".csv")
 python /path_to/FCN-f0/FCN-f0.py /path_to/test.wav
 
-# Run the analysis on a whole folder of audio files :
+#### Run the analysis on a whole folder of audio files :
 python /path_to/FCN-f0/FCN-f0.py /path_to/audio_files
 
-# Specify an output directory or file name with "-o" option(if directory doesn't exist, it will be created):
+#### Specify an output directory or file name with "-o" option(if directory doesn't exist, it will be created):
 python /path_to/FCN-f0/FCN-f0.py /path_to/test.wav -o /path_to/output.f0.csv
 python /path_to/FCN-f0/FCN-f0.py /path_to/audio_files -o /path_to/output_dir
 
-# Choose a specific model for running the analysis (default is FCN-993):
+#### Choose a specific model for running the analysis (default is FCN-993):
 Use FCN-929 model :
 python /path_to/FCN-f0/FCN-f0.py /path_to/test.wav -m 929 -o /path_to/output.f0-929.csv
 
@@ -143,13 +143,13 @@ python /path_to/FCN-f0/FCN-f0.py /path_to/test.wav -m 1953 -o /path_to/output.f0
 Use CREPE-speech model :
 python /path_to/FCN-f0/FCN-f0.py /path_to/test.wav -m CREPE -o /path_to/output.f0-CREPE.csv
 
-# Apply viterbi smoothing of output :
+#### Apply viterbi smoothing of output :
 python /path_to/FCN-f0/FCN-f0.py /path_to/test.wav -vit
 
-# Output result to sdif format (requires installing the eaSDIF python library. Default format is csv):
+#### Output result to sdif format (requires installing the eaSDIF python library. Default format is csv):
 python /path_to/FCN-f0/FCN-f0.py /path_to/test.wav -f sdif
 
-# Deactivate fully-convolutional mode (For comparison purpose, but not recommanded otherwise, as it makes the computation much slower):
+#### Deactivate fully-convolutional mode (For comparison purpose, but not recommanded otherwise, as it makes the computation much slower):
 python /path_to/FCN-f0/FCN-f0.py /path_to/test.wav -FC 0
 
 ## References
