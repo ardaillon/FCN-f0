@@ -41,8 +41,34 @@ def to_local_average_cents(salience, center=None, fmin=30., fmax=1000., vecSize=
 
     raise Exception("label should be either 1d or 2d ndarray")
 
+def to_local_average_cents_CREPE(salience, center=None):
+    """
+    find the weighted average cents near the argmax bin
+    """
 
-def to_viterbi_cents(salience, vecSize=486, smoothing_factor=12):
+    if not hasattr(to_local_average_cents, 'cents_mapping'):
+        # the bin number-to-cents mapping
+        to_local_average_cents.mapping = (
+                np.linspace(0, 7180, 360) + 1997.3794084376191)
+
+    if salience.ndim == 1:
+        if center is None:
+            center = int(np.argmax(salience))
+        start = max(0, center - 4)
+        end = min(len(salience), center + 5)
+        salience = salience[start:end]
+        product_sum = np.sum(
+            salience * to_local_average_cents.mapping[start:end])
+        weight_sum = np.sum(salience)
+        return product_sum / weight_sum
+    if salience.ndim == 2:
+        return np.array([to_local_average_cents(salience[i, :]) for i in
+                         range(salience.shape[0])])
+
+    raise Exception("label should be either 1d or 2d ndarray")
+
+
+def to_viterbi_cents(salience, vecSize=486, smoothing_factor=12, modelTag=993):
     """
     Find the Viterbi path using a transition prior that induces pitch
     continuity.
@@ -72,8 +98,12 @@ def to_viterbi_cents(salience, vecSize=486, smoothing_factor=12):
     observations = np.argmax(salience, axis=1)
     path = model.predict(observations.reshape(-1, 1), [len(observations)])
 
-    return np.array([to_local_average_cents(salience[i, :], path[i]) for i in
-                     range(len(observations))])
+    if(modelTag=='CREPE'):
+        return np.array([to_local_average_cents_CREPE(salience[i, :], path[i]) for i in
+                         range(len(observations))])
+    else:
+        return np.array([to_local_average_cents(salience[i, :], path[i]) for i in
+                         range(len(observations))])
 
 
 def get_global_pooling_factor(model):
@@ -131,7 +161,10 @@ def predict_frameWise(audio, model, model_input_size = 993, viterbi=False, step_
     if viterbi:
         cents = to_viterbi_cents(activation)
     else:
-        cents = to_local_average_cents(activation)
+        if(modelTag=='CREPE'):
+            cents = to_local_average_cents_CREPE(activation)
+        else:
+            cents = to_local_average_cents(activation)
 
     frequency = 10 * 2 ** (cents / 1200)
     frequency[np.isnan(frequency)] = 0
@@ -298,7 +331,7 @@ def run_prediction_on_file(inFile, output=None, model=None, modelTag=993, viterb
         startPredictTime = timeModule.time()
         # run prediction :
         (timeVec, frequencies, confidence, activations) = predict_frameWise(audio, model, model_input_size, viterbi,
-                                                                            step_size=10, model_srate = model_srate)
+                                                                            step_size=10, model_srate = model_srate, modelTag=modelTag)
         stopPredictTime = timeModule.time()
         predictDuration = stopPredictTime - startPredictTime
 
@@ -354,6 +387,10 @@ def run_prediction_on_file(inFile, output=None, model=None, modelTag=993, viterb
 
 
 if __name__ == '__main__':
+    '''
+    Old command-line interface.
+    Better use simplified interface in FCN-f0.py
+    '''
 
     # get command-line input arguments :
 
