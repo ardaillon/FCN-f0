@@ -39,10 +39,10 @@ def main():
                              'results are close in terms of accuracy '
                              'but differ in terms of latency and speed '
                              '(see article). We advice to use the model 993')
-    parser.add_argument('--viterbi', '-V', action='store_true',
+    parser.add_argument('--viterbi', '-vit', action='store_true',
                         help='perform Viterbi decoding to smooth the pitch '
                              'curve')
-    parser.add_argument('-f', "--out_format", default='sdif',
+    parser.add_argument('-f', "--out_format", default='csv',
                         help='format to use for storing f0 curve. Either '
                              'sdif or csv')
     parser.add_argument("-FC", "--full_conv_mode", type=int, default=1,
