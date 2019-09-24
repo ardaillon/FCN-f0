@@ -308,7 +308,7 @@ def get_output_path(file, suffix, output_dir):
     return the output path of an output file corresponding to a wav file
     """
 
-    if((suffix.endswith('.sdif') and output_dir.endswith('sdif')) or (suffix.endswith('.csv') and output_dir.endswith('csv'))):
+    if((output_dir is not None) and ((suffix.endswith('.sdif') and output_dir.endswith('sdif')) or (suffix.endswith('.csv') and output_dir.endswith('csv')))):
         path = output_dir
     else:
         (filePath, ext) = os.path.splitext(file)
