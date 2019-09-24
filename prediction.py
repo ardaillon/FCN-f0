@@ -210,7 +210,7 @@ def sliding_norm(audio, frame_sizes = 993):
     return np.array(audio)
 
 
-def get_audio(sndFile, model_input_size = 993, modelTag = '993', model_srate = 8000.):
+def get_audio(sndFile, model_input_size = 993, model_srate = 8000.):
 
     # read sound :
     from scipy.io import wavfile
@@ -329,7 +329,7 @@ def run_prediction_on_file(inFile, output=None, model=None, modelTag=993, viterb
     (model_input_size, model_srate) = get_infos_from_tag(modelTag)
 
     # read and pad the audio from file :
-    audio = get_audio(inFile, model_input_size, modelTag, model_srate)
+    audio = get_audio(inFile, model_input_size, model_srate)
 
     # run prediction :
     if(not FULLCONV):
