@@ -275,13 +275,13 @@ def run_prediction(filename, output = None, modelTag = 993, viterbi = False, out
     for path in filename:
         if os.path.isdir(path):
             found = ([file for file in os.listdir(path) if
-                      (file.lower().endswith('.wav') or file.lower().endswith('.aiff'))])
+                      (file.lower().endswith('.wav') or file.lower().endswith('.aiff') or file.lower().endswith('.aif'))])
             if len(found) == 0:
                 print('FCN-f0: No sound files (only wav or aiff supported) found in directory {}'.format(path),
                       file=sys.stderr)
             files += [os.path.join(path, file) for file in found]
         elif os.path.isfile(path):
-            if not (path.lower().endswith('.wav') or path.lower().endswith('.aiff')):
+            if not (path.lower().endswith('.wav') or path.lower().endswith('.aiff') or path.lower().endswith('.aif')):
                 print('FCN-f0: Expecting sound file(s) (only wav or aiff supported) but got {}'.format(path),
                       file=sys.stderr)
             else:
