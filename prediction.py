@@ -203,6 +203,7 @@ def sliding_norm(audio, frame_sizes = 993):
     audio = audio[frame_sizes//2:-frame_sizes//2]
     mean = mean.flatten()
     std = std.flatten()
+    std[np.where(std==0.)[0]] = np.finfo(np.float32).eps # replace 0 by eps to avoid division by zero
     audio -= mean
     audio /= std
 
