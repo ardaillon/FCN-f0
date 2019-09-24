@@ -1,6 +1,3 @@
-# User warning :
-You may currently encounter memory issues when running the analysis on long audio files (> 2min30s approximately).
-This problem will be fixed very soon!!
 
 # FCN-f0
 Code for running monophonic pitch (F0) estimation using the fully-convolutional neural network models described in the publication :
