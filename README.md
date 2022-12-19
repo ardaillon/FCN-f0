@@ -4,7 +4,7 @@ Code for running monophonic pitch (F0) estimation using the fully-convolutional 
 
 L. Ardaillon and A. Roebel, "Fully-Convolutional Network for Pitch Estimation of Speech Signals", Proc. Interspeech, 2019.
 
-We kindly request academic publications making use of our FCN models to cite this paper, which can be dowloaded from the following url : https://www.isca-speech.org/archive/Interspeech_2019/pdfs/2815.pdf
+We kindly request academic publications making use of our FCN models to cite this paper, which can be dowloaded from the following url : https://hal.archives-ouvertes.fr/hal-02439798/document
 
 ## Description
 The code provided in this repository aims at performing monophonic pitch (F0) estimation using Fully-Convolutional Neural Networks. 
