@@ -90,7 +90,7 @@ def to_viterbi_cents(salience, vecSize=486, smoothing_factor=12, modelTag=993):
                 ((1 - self_emission) / vecSize))
 
     # fix the model parameters because we are not optimizing the model
-    model = hmm.MultinomialHMM(vecSize, starting, transition)
+    model = hmm.CategoricalHMM(vecSize, starting, transition)
     model.startprob_, model.transmat_, model.emissionprob_ = \
         starting, transition, emission
 
